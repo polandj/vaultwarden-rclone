@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - master
+    paths:
+      - .github/workflows/docker-publish.yml
 
 jobs:
   publish:
