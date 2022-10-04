@@ -2,9 +2,8 @@ name: 'Docker Publish'
 
 on:
   push:
-    tags:
-      - 'v*.*.*'
-      - '!v*.*.*-*'
+    branches:
+      - master
 
 jobs:
   publish:
