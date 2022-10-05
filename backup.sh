@@ -1,13 +1,13 @@
 #!/bin/bash
 
+DATA_FOLDER=/data/
+TEMP_DIR=/var/tmp/
+
 # Make environment variables available
 source /etc/environment
 
-DATE_TIME=$(date '${BKUP_DT_FORMAT}')
+DATE_TIME=$(date ${BKUP_DT_FORMAT})
 BACKUP_DIR=${TEMP_DIR}${DATE_TIME}/
-
-DATA_FOLDER=/data/
-TEMP_DIR=/var/tmp/
 
 echo "Backing up on ${DATE_TIME}"
 

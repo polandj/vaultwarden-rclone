@@ -10,8 +10,8 @@ if [ -z ${BKUP_PROVIDER_DEST+x} ]; then
 	echo "BKUP_PROVIDER_DEST needs to be set to specify destination path/bucket on backup provider"; 
 fi
 
-# Save the env variable to make it available to cron
-printenv | grep -i 'BKUP_' >> /etc/environment
+# Save the env variables for cron/backup script
+printenv | grep 'BKUP_' | grep -v 'AUTH' >> /etc/environment
 
 set -m
 
