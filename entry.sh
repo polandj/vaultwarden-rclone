@@ -4,17 +4,19 @@ CRONJOB_DIR=/etc/cron.d/
 CRONJOB_FILE=backup_job
 
 if [ -z ${BKUP_PROVIDER_AUTH+x} ]; then
-	echo "var is unset"; 
+	echo "BKUP_PROVIDER_AUTH needs to be set to authenticate with backup provider"; 
 fi
 if [ -z ${BKUP_PROVIDER_DEST+x} ]; then 
-	echo "var is unset"; 
+	echo "BKUP_PROVIDER_DEST needs to be set to specify destination path/bucket on backup provider"; 
 fi
-
 
 # Save the env variable to make it available to cron
 printenv | grep -i 'BKUP_' >> /etc/environment
 
 set -m
+
+# Configure rclone
+rclone config create ${BKUP_PROVIDER_NAME} ${BKUP_PROVIDER_TYPE} ${BKUP_PROVIDER_AUTH} 
 
 # Spawn cron process in bg
 cron &
