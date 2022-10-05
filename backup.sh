@@ -55,7 +55,6 @@ echo "Backup folder compressed"
 rclone copy -L -q "${TEMP_DIR}${DATE_TIME}.tgz" ${BKUP_PROVIDER_NAME}:${BKUP_PROVIDER_DEST}
 
 # Remove our work
-exit(0)
 if [ -d "$BACKUP_DIR" ]; then
         rm -rdf "$BACKUP_DIR"
 fi
