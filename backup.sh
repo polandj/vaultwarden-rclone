@@ -51,6 +51,8 @@ echo "Backup rsa keys done"
 tar -zcf "${TEMP_DIR}${DATE_TIME}.tgz" -C "${BACKUP_DIR}" .
 echo "Backup folder compressed"
 
+# Setup the rclone endpoint (it's ok to do over and over)
+rclone config create ${BKUP_PROVIDER_NAME} ${BKUP_PROVIDER_TYPE} ${BKUP_PROVIDER_AUTH}
 # Rclone to remote dest
 rclone copy -L -q "${TEMP_DIR}${DATE_TIME}.tgz" ${BKUP_PROVIDER_NAME}:${BKUP_PROVIDER_DEST}
 
