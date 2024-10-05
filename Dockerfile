@@ -30,4 +30,4 @@ RUN chmod 755 /backup.sh
 
 # Copy the entrypoint and run a helper script as the command
 #ENTRYPOINT ["/usr/bin/dumb-init", "--"]
-CMD ["/start.sh"]
+CMD ["/entry.sh"]
