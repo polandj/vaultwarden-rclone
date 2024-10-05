@@ -11,7 +11,7 @@ if [ -z ${BKUP_PROVIDER_DEST+x} ]; then
 fi
 
 # Save the env variables for cron/backup script
-printenv | grep 'BKUP_' | grep -v 'AUTH' >> /etc/environment
+printenv | grep 'BKUP_' >> /etc/environment
 
 set -m
 
@@ -20,9 +20,6 @@ rclone config create ${BKUP_PROVIDER_NAME} ${BKUP_PROVIDER_TYPE} ${BKUP_PROVIDER
 
 # Spawn cron process in bg
 cron &
-
-
-# Generate cron file based on ENV vars
 
 #  Function to remove big numbers or double commas
 format_cron_string() {
