@@ -16,10 +16,18 @@ printenv | grep 'BKUP_' >> /etc/environment
 set -m
 
 # Configure rclone
-rclone config create ${BKUP_PROVIDER_NAME} ${BKUP_PROVIDER_TYPE} ${BKUP_PROVIDER_AUTH} 
+/usr/bin/rclone config create ${BKUP_PROVIDER_NAME} ${BKUP_PROVIDER_TYPE} ${BKUP_PROVIDER_AUTH} 
+
+ln -s /backup.sh /etc/cron.daily/vw_backup
+
+# Launch start script, it prevents the container from exiting
+./start.sh
+
+# NOTREACHED
+# ==========
 
 # Spawn cron process in bg
-cron &
+#cron &
 
 #  Function to remove big numbers or double commas
 format_cron_string() {
