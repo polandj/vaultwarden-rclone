@@ -1,35 +1,13 @@
 #!/bin/bash
 
+#
+# This is what gets run when our container starts.  It does some setup for backups then
+# calls the default vaultwarden start.sh script that runs the server.
+#
+
 CRONJOB_DIR=/etc/cron.d/
 CRONJOB_FILE=backup_job
 
-if [ -z ${BKUP_PROVIDER_AUTH+x} ]; then
-	echo "BKUP_PROVIDER_AUTH needs to be set to authenticate with backup provider"; 
-fi
-if [ -z ${BKUP_PROVIDER_DEST+x} ]; then 
-	echo "BKUP_PROVIDER_DEST needs to be set to specify destination path/bucket on backup provider"; 
-fi
-
-# Save the env variables for cron/backup script
-printenv | grep 'BKUP_' >> /etc/environment
-
-set -m
-
-# Configure rclone
-/usr/bin/rclone config create ${BKUP_PROVIDER_NAME} ${BKUP_PROVIDER_TYPE} ${BKUP_PROVIDER_AUTH} 
-
-ln -s /backup.sh /etc/cron.daily/vw_backup
-
-# Launch start script, it prevents the container from exiting
-./start.sh
-
-# NOTREACHED
-# ==========
-
-# Spawn cron process in bg
-#cron &
-
-#  Function to remove big numbers or double commas
 format_cron_string() {
         # input string (ENV var), maximum value of the item
         IN_STR=$1
@@ -66,11 +44,29 @@ format_cron_string() {
         # READ $OUTPUT
 }
 
-#  Format minute string
+if [ -z ${BKUP_PROVIDER_AUTH+x} ]; then
+	echo "BKUP_PROVIDER_AUTH needs to be set to authenticate with backup provider"; 
+fi
+if [ -z ${BKUP_PROVIDER_DEST+x} ]; then 
+	echo "BKUP_PROVIDER_DEST needs to be set to specify destination path/bucket on backup provider"; 
+fi
+
+# Save the quoted BKUP env variables for cron/backup script
+printenv | grep 'BKUP_' | sed -e 's/=/="/' -e 's/$/"/' > /etc/environment
+
+# Configure rclone
+/usr/bin/rclone config create ${BKUP_PROVIDER_NAME} ${BKUP_PROVIDER_TYPE} ${BKUP_PROVIDER_AUTH} 
+
+# Format cron time string
 format_cron_string "$BKUP_AT_MIN" 60
 MIN_STR="$OUTPUT"
 format_cron_string "$BKUP_AT_HOUR" 24
 HOUR_STR="$OUTPUT"
+
+# Allow jobs into BG
+set -m
+# Start cron (into background)
+cron
 
 # Write the cron file.
 echo "${MIN_STR}" "${HOUR_STR}" "* * * /./backup.sh" > "${CRONJOB_DIR}${CRONJOB_FILE}"
