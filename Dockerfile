@@ -1,4 +1,4 @@
-FROM vaultwarden/server:1.33.1
+FROM vaultwarden/server:1.35.0
 
 WORKDIR /
 
